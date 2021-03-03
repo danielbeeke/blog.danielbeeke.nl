@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+{{> head }}
+<body>
+  <h1 class="title"><span>Daniel Beeke's blog</span></h1>
+
+  <ul class="recent">
+  {{#each posts }}
+    <li>
+      <div class="title"><a href="{{ path }}">{{ title }} {{ date }}</a></div>
+    </li>
+  {{/each}}
+  </ul>
+
+</body>
+</html>

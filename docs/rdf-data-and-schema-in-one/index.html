@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Daniel Beeke | RDF; data and schema in one</title>
+  <meta name="description" content="" />
+  <link rel="stylesheet" href="/style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/components/prism-core.min.js" integrity="sha512-xR+IAyN+t9EBIOOJw5m83FTVMDsPd63IhJ3ElP4gmfUFnQlX9+eWGLp3P4t3gIjpo2Z1JzqtW/5cjgn+oru3yQ==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-zc7WDnCM3aom2EziyDIRAtQg1mVXLdILE09Bo+aE1xk0AM2c2cVLfSW9NrxE5tKTX44WBY0Z2HClZ05ur9vB6A==" crossorigin="anonymous"></script>
+
+  <script src="/js/aspect-ratio.js"></script>
+  <script src="/js/App.js" type="module"></script>
+</head>
+  <body>
+    <article class="post full">
+      <div class="title-wrapper">
+          <h2 class="serie"><span class="serie-tag">serie</span>Building a webapplication on top of RDF</h2>
+        <h1 class="title"><span>RDF; data and schema in one</span></h1>
+      </div>
+      <h3 id="a-thought-exercise">A thought exercise:</h3>
+<blockquote>
+<p> What if you could give the link of a cake recipe, to the website of your local supermarket and it would show all the products that you would need to bake that cake?</p>
+</blockquote>
+<p>How would such a thing work? What components would you need?</p>
+<ul>
+<li>Universal resource identifiers (The recipe and the supermarket are &#39;connected&#39; at some level)</li>
+<li>A way to extract detailed data from a recipe URL (Parsing meta data from a page)</li>
+<li>A supermarket that has each of their products linked to a universal known page of the specific ingredient</li>
+<li>A data format that allows for interoperatability</li>
+<li>A bit of software that does this all for you when you paste the link</li>
+</ul>
+<p>A lot of this already exists in the ecosystem of RDF. Not all, unfortunately. It is very hard to have local businesses play their part in this interoperability thing. However this article is about technical things and not about political systems.</p>
+<h3 id="a-bit-more-to-sparkle-the-imagination">A bit more to sparkle the imagination</h3>
+<p>Here is a small piece of a presentation <a href="https://ruben.verborgh.org/">Ruben Verborgh</a> gave. It shows one query that is executed on multiple sources where it joins the data of those sources to get the wanted results.</p>
+<iframe src="https://www.youtube.com/embed/LUF7plExdv8?start=301&end=360" allowfullscreen></iframe>
+
+<h3 id="a-relational-database-background">A relational database background</h3>
+<p>Coming from a relational database background I was used to tables and columns defined in schema&#39;s. Well proven technology. I come from a Drupal background. Lot&#39;s of big databases. One of the downsides of these relational databases is that the data is locked inside the system. It is tied to the schema&#39;s. Without the schema&#39;s your data is missing a lot of meaning. Just having some numbers, a bit of text and some booleans does not mean a lot. The property name is really important.</p>
+<p>You can not easily email a slice of the data without sending the schema&#39;s. In the relational database paradigm you have to include the schema&#39;s. 
+What if you could have these schema&#39;s included in the data in the first place? But maybe at a different level?</p>
+<h3 id="onto-triples">Onto triples</h3>
+<p>Let&#39;s make a jump to triples. Triples are the basis of RDF data. Everything in RDF is composed of triples. Just three core elements. </p>
+<p>The <strong>subject</strong>, the <strong>predicate</strong> and the <strong>object</strong>. </p>
+<p>For me these three were difficult to grasp at the beginning. I will try may best to explain them in small steps to you. So let us start very simple:</p>
+<p>We have a person, named John Doe, who is 51 years old. He will be our test subject.</p>
+<h4 id="1-lets-start-by-listing-the-properties-in-a-table">1. Let&#39;s start by listing the properties in a table:</h4>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>John Doe</td>
+<td>givenName</td>
+<td>John</td>
+</tr>
+<tr>
+<td>John Doe</td>
+<td>familyName</td>
+<td>Doe</td>
+</tr>
+<tr>
+<td>John Doe</td>
+<td>age</td>
+<td>51</td>
+</tr>
+</tbody></table>
+<p>Maybe you are thinking, that is a bit of duplicate data just to show some information about John Doe. True, but it will prove to be very flexible and usable for complex systems. What we are having are pieces of a graph. More on that later.</p>
+<h4 id="2-giving-things-a-name">2. Giving things a name</h4>
+<p>We have a <strong>subject</strong>: &#39;John Doe&#39; and we have a couple of <strong>objects</strong>: John, Doe and 51. And those <strong>predicate</strong> something about John Doe. </p>
+<table>
+<thead>
+<tr>
+<th>Subject</th>
+<th>Predicate</th>
+<th>Object</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>John Doe</td>
+<td>givenName</td>
+<td>John</td>
+</tr>
+<tr>
+<td>John Doe</td>
+<td>familyName</td>
+<td>Doe</td>
+</tr>
+<tr>
+<td>John Doe</td>
+<td>age</td>
+<td>51</td>
+</tr>
+</tbody></table>
+<h4 id="3-global-unique-identifiers">3. Global unique identifiers</h4>
+<p>Let&#39;s get one step further towards real RDF data. Every &#39;thing&#39; in RDF has an URI (Uniform resource identifier). It looks like an URL. So with that, John Doe will become: <a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a>. A great thing about URL&#39;s is that they are unique. </p>
+<p>Maybe you start thinking, could it...? Yes indeed, this uniqueness is used for joining data sources, but more on that later. Let&#39;s focus back to the triples:</p>
+<p>Now we have:</p>
+<table>
+<thead>
+<tr>
+<th>Subject</th>
+<th>Predicate</th>
+<th>Object</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a></td>
+<td>givenName</td>
+<td>John</td>
+</tr>
+<tr>
+<td><a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a></td>
+<td>familyName</td>
+<td>Doe</td>
+</tr>
+<tr>
+<td><a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a></td>
+<td>age</td>
+<td>51</td>
+</tr>
+</tbody></table>
+<h4 id="4-data-types">4. Data types</h4>
+<p>Let&#39;s explain that John is a piece of text, a string literal.</p>
+<table>
+<thead>
+<tr>
+<th>Subject</th>
+<th>Predicate</th>
+<th>Object</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a></td>
+<td>givenName</td>
+<td>&quot;John&quot;</td>
+</tr>
+<tr>
+<td><a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a></td>
+<td>familyName</td>
+<td>&quot;Doe&quot;</td>
+</tr>
+<tr>
+<td><a href="http://example.com/JohnDoe">http://example.com/JohnDoe</a></td>
+<td>age</td>
+<td>51</td>
+</tr>
+</tbody></table>
+<p>Lets step out of the table structure, we were talking about a graph and not a relational database. </p>
+<pre><code class="language-turtle">&lt;http://example.com/JohnDoe&gt;  givenName  &quot;John&quot;
+&lt;http://example.com/JohnDoe&gt;  familyName &quot;Doe&quot;
+&lt;http://example.com/JohnDoe&gt;  age         51</code></pre>
+<h4 id="5-data-and-schema-in-one">5. Data and schema in one</h4>
+<p>Here comes the great thing. The twist, turning things inside out. The predicate should also be an URI. So it will become:</p>
+<pre><code class="language-turtle">&lt;http://example.com/JohnDoe&gt;  &lt;http://xmlns.com/foaf/0.1/givenName&gt;   &quot;John&quot;
+&lt;http://example.com/JohnDoe&gt;  &lt;http://xmlns.com/foaf/0.1/familyName&gt;  &quot;Doe&quot;
+&lt;http://example.com/JohnDoe&gt;  &lt;http://xmlns.com/foaf/0.1/age&gt;          51</code></pre>
+<p>This is a bit hard to read, so let&#39;s switch to something more readable called turtle.</p>
+<h4 id="6-human-readable-data">6. Human readable data</h4>
+<pre><code class="language-turtle">@prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
+@prefix ex: &lt;http://example.com/&gt; .
+
+ex:JohnDoe
+    foaf:givenName &quot;John&quot; ;
+    foaf:familyName &quot;Doe&quot; ;
+    foaf:age 51 .</code></pre>
+<p>So what happened here? And what really is the twist? The text you see is in turtle format. It is a human readable RDF format. Within RDF it is quite common to transform from one format to another. Some formats are easy to read for machines, others are easy to read for humans.</p>
+<p>The &#39;@prefix&#39; lines are aliases. With this we can reuse the label &#39;foaf&#39; and each time it is used, replace it with: <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a>. It makes it a lot more readable. </p>
+<h3 id="about-ontologies">About ontologies</h3>
+<p>But what is foaf? Foaf stands for &#39;Friend of a Friend&#39; and it is called an ontology. We could see this ontology as a place of properties with their definitions. Something like schema&#39;s. Well, the advise is that these predicates should resolve to some kind of documentation. </p>
+<p>So if you would go to <a href="http://xmlns.com/foaf/0.1/">http://xmlns.com/foaf/0.1/</a> it gives you a documentation page. </p>
+<p>To be honest foaf is not that nice because somehow going to <a href="http://xmlns.com/foaf/0.1/familyName">http://xmlns.com/foaf/0.1/familyName</a> does not directly link to the familyName section. But anyways, let&#39;s check a different ontology. </p>
+<p><a href="https://schema.org/">Schema.org</a> maybe you have heard of it. People use it to enrich there search engine snippets / previews. It is an ontology describing almost everything there is. For example a <a href="https://schema.org/Book">book</a> or a <a href="https://schema.org/Car">car</a>.</p>
+<h3 id="final-thoughts">Final thoughts</h3>
+<p>I hope you found this useful. I would like to see more developers using RDF so we can have more interoperability. This article was the first one in a series called &quot;Building a webapplication on top of RDF&quot;. I will be writing about all the things you will encounter trying to create an application on top of RDF. If you have things you would like to see, or if you have remarks, you can mail me at <a href="mailto:mail@danielbeeke.nl">mail@danielbeeke.nl</a>.</p>
+
+    </article>
+  </body>
+</html>
