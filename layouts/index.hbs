@@ -4,13 +4,12 @@
 <body>
   <h1 class="title"><span>Daniel Beeke's blog</span></h1>
 
-  <ul class="recent">
   {{#each posts }}
-    <li>
-      <div class="title"><a href="{{ path }}">{{ title }} {{ date }}</a></div>
-    </li>
+    <a class="post teaser" href="{{ path }}"> 
+      <span class="date">{{ date }}</span>
+      <h3 class="title">{{ title }}</h3>
+    </a>
   {{/each}}
-  </ul>
 
 </body>
 </html>

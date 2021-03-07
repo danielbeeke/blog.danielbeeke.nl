@@ -288,3 +288,21 @@ pre[class*=language-] {
     box-shadow: inset 0 -15px white, inset 0 -45px var(--color-primary);
   }
 }
+.post.teaser {
+  display: inline-flex;
+  width: 100%;
+  max-width: 900px;
+  flex-direction: column;
+  padding: 0 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  border: 1px solid var(--color-primary);
+}
+.post.teaser .title {
+  margin-top: 0;
+}
+.post.teaser .date {
+  margin-top: 30px;
+  font-style: italic;
+  font-size: 14px;
+}

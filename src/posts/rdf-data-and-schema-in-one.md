@@ -129,7 +129,7 @@ So if you would go to http://xmlns.com/foaf/0.1/ it gives you a documentation pa
 
 To be honest foaf is not that nice because somehow going to http://xmlns.com/foaf/0.1/familyName does not directly link to the familyName section. But anyways, let's check a different ontology. 
 
-[Schema.org](https://schema.org/) maybe you have heard of it. People use it to enrich there search engine snippets / previews. It is an ontology describing almost everything there is. For example a [book](https://schema.org/Book) or a [car](https://schema.org/Car).
+[Schema.org](https://schema.org/) maybe you have heard of it. People use it to enrich their search engine snippets / previews. It is an ontology describing almost everything there is. For example a [book](https://schema.org/Book) or a [car](https://schema.org/Car).
 
 ### Final thoughts
 
