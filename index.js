@@ -9,52 +9,80 @@ import sass from 'metalsmith-dart-sass'
 import discoverPartials from 'metalsmith-discover-partials'
 import assets from 'metalsmith-assets'
 import dateFormatter from 'metalsmith-date-formatter'
+import Handlebars from 'handlebars'
+
+Handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context);
+});
+
+let liveReload
 
 Metalsmith('./')
 .source('./src')
-.destination('./docs')
-.clean(true)
+.destination('./build')
 .use(serve({
   port: 5000
 }))
 .use(assets({
-  source: './public',
+  source: './src/public',
   destination: './'
 }))
 .use(dateFormatter({
   dates: [
-    {
-        key: 'date',
-        format: 'DD MM YYYY'
-    }
+    { key: 'date',format: 'DD MM YYYY' }
   ]
 }))
 .metadata({
-  sitename: 'Daniel Beeke',
-  siteurl: 'https://blog.danielbeeke.nl',
-  description: 'Hi, I am Daniël Beeke an autodidact software engineer solving complex problems for people & organizations.'
+  sitename: 'MediaWorks',
+  siteurl: 'https://mediaworks.global'
 })
-.use(discoverPartials())
+.use(discoverPartials({
+  directory: 'src/partials',
+}))
 .use(sass())
 .use(collections({
-  posts: 'posts/*.md'
+  pages: { pattern: 'pages/*.md' },
+  services: { pattern: 'services/*.md' }
+}))
+.use(permalinks({
+  pattern: ':title',
+  relative: false,
+
+  // Defines the paths for the collections.
+  linksets: [
+    {
+      match: { collection: 'services' },
+      pattern: 'services/:title',
+    },
+    {
+      match: { collection: 'pages' },
+      pattern: 'pages/:title'
+    }
+  ]
 }))
 .use(markdown())
-.use(permalinks({
-  relative: false,
-  pattern: ':title'
-}))
 .use(layouts({
-  default: 'post.hbs',
-  "pattern": "**/*.html"
+  directory: 'src/layouts',
+  pattern: "**/*.html"
 }))
 .use(watch({
   paths: {
-    '${source}/**/*': true,
+    '${source}/**/*': '**/*',
     'scss/**/*': '*'
   },
-  livereload: true,
+  livereload: {
+    callback: (server) => {
+      liveReload = server
+    }
+  },
+  invalidateCache: true
 }))
+.clean(true)
 .build(function(err) {
+  setTimeout(() => {
+    // Reloads the connected browsers to the local development server.
+    for (const client of Object.values(liveReload.clients))
+      client.reload(['**/*'])
+  }, 800)
   if (err) throw err
 })

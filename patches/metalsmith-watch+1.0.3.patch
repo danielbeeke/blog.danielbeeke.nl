@@ -1,0 +1,14 @@
+diff --git a/node_modules/metalsmith-watch/dist/index.js b/node_modules/metalsmith-watch/dist/index.js
+index b286316..f89ae63 100644
+--- a/node_modules/metalsmith-watch/dist/index.js
++++ b/node_modules/metalsmith-watch/dist/index.js
+@@ -237,6 +237,9 @@ exports["default"] = function (options) {
+   var livereload = undefined;
+   if (options.livereload) {
+     livereload = (0, _livereload2["default"])(options.livereload, options.log);
++    if (options.livereload?.callback) {
++      options.livereload.callback(livereload)
++    }
+   }
+ 
+   var watched = false;
