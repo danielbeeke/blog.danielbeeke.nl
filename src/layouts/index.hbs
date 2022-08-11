@@ -1,25 +1,23 @@
-<!DOCTYPE html>
-<html>
-{{> head }}
-<body>
+{{#extend "html"}}
 
-  {{{ contents }}}
+  {{#content "body"}}
+  
+    {{{ contents }}}
 
-  <h3>Posts</h3>
-  {{#each collections.pages }}
-    <a class="page teaser" href="{{ path }}"> 
-      <span class="date">{{ date }}</span>
-      <h3 class="title">{{ title }}</h3>
-    </a>
-  {{/each}}
+    <h3>Posts</h3>
+    {{#each collections.pages }}
+      <a class="page teaser" href="{{ path }}"> 
+        <span class="date">{{ date }}</span>
+        <h3 class="title">{{ title }}</h3>
+      </a>
+    {{/each}}
 
-  <h3>Services</h3>
-  {{#each collections.services }}
-    <a class="service teaser" href="{{ path }}"> 
-      <h3 class="title">{{ title }}</h3>
-    </a>
-  {{/each}}
-
-
-</body>
-</html>
+    <h3>Services</h3>
+    {{#each collections.services }}
+      <a class="service teaser" href="{{ path }}"> 
+        <h3 class="title">{{ title }}</h3>
+      </a>
+    {{/each}}
+  {{/content}}
+  
+{{/extend}}

@@ -2,7 +2,7 @@ import Metalsmith from 'metalsmith'
 import collections from 'metalsmith-collections'
 import layouts from 'metalsmith-layouts'
 import markdown from 'metalsmith-markdown'
-import permalinks from 'metalsmith-permalinks'
+import permalinks from '@metalsmith/permalinks'
 import serve from 'metalsmith-serve'
 import watch from 'metalsmith-watch'
 import sass from 'metalsmith-dart-sass'
@@ -10,10 +10,13 @@ import discoverPartials from 'metalsmith-discover-partials'
 import assets from 'metalsmith-assets'
 import dateFormatter from 'metalsmith-date-formatter'
 import Handlebars from 'handlebars'
+import HandlebarsLayouts from 'handlebars-layouts'
+
+Handlebars.registerHelper(HandlebarsLayouts(Handlebars))
 
 Handlebars.registerHelper('json', function(context) {
-  return JSON.stringify(context);
-});
+  return JSON.stringify(context)
+})
 
 let liveReload
 
@@ -44,6 +47,7 @@ Metalsmith('./')
   pages: { pattern: 'pages/*.md' },
   services: { pattern: 'services/*.md' }
 }))
+.use(markdown())
 .use(permalinks({
   pattern: ':title',
   relative: false,
@@ -56,12 +60,12 @@ Metalsmith('./')
     },
     {
       match: { collection: 'pages' },
-      pattern: 'pages/:title'
+      pattern: ':title'
     }
   ]
 }))
-.use(markdown())
 .use(layouts({
+  engine: 'handlebars',
   directory: 'src/layouts',
   pattern: "**/*.html"
 }))

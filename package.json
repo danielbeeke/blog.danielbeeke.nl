@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch src --ext md,hbs,html index.js",
+    "start": "concurrently \"nodemon --watch src --ext md,hbs,html index.js\" \"npx netlify-cms-proxy-server\"",
+    "backend": "npx netlify-cms-proxy-server",
     "postinstall": "patch-package"
   },
   "keywords": [],
@@ -12,8 +13,10 @@
   "type": "module",
   "license": "ISC",
   "devDependencies": {
+    "@metalsmith/permalinks": "^2.4.0",
     "concurrently": "^7.3.0",
-    "jstransformer-handlebars": "^1.1.0",
+    "jstransformer-handlebars": "^1.2.0",
+    "jstransformer-markdown": "^1.2.1",
     "metalsmith": "^2.3.0",
     "metalsmith-assets": "^0.1.0",
     "metalsmith-collections": "^0.9.0",
@@ -22,10 +25,12 @@
     "metalsmith-discover-partials": "^0.1.2",
     "metalsmith-layouts": "^2.3.1",
     "metalsmith-markdown": "^1.3.0",
-    "metalsmith-permalinks": "^2.2.0",
     "metalsmith-serve": "^0.0.7",
     "metalsmith-watch": "^1.0.3",
     "nodemon": "^2.0.19",
     "patch-package": "^6.4.7"
+  },
+  "dependencies": {
+    "handlebars-layouts": "^3.1.4"
   }
 }

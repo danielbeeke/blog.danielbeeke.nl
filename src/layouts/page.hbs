@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html>
-{{> head }}
-  <body>
+{{#extend "html"}}
+
+  {{#content "body"}}
     <article class="page full">
       <h1 class="title">Page: {{ title }}</h1>
       {{{ contents }}}
     </article>
-  </body>
-</html>
+  {{/content}}
+  
+{{/extend}}

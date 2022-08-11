@@ -1,0 +1,1 @@
+# MetalSmith with Netlify CMS
